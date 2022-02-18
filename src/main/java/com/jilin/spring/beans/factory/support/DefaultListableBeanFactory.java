@@ -34,12 +34,27 @@ public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFacto
      * @throws BeansException
      */
     @Override
-    protected BeanDefinition getBeanDefinition(String beanName) throws BeansException {
+    public BeanDefinition getBeanDefinition(String beanName) throws BeansException {
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
         if (beanDefinition==null){
             throw new BeansException("没有找到beanname:"+beanName);
         }
         return beanDefinition;
+    }
+
+    /**
+     * 判断是否包含指定名称的BeanDefinition
+     * @param beanName
+     * @return
+     */
+    @Override
+    public boolean containsBeanDefinition(String beanName) {
+        return beanDefinitionMap.containsKey(beanName);
+    }
+
+    @Override
+    public String[] getBeanDefinitionNames() {
+        return new String[0];
     }
 
 
