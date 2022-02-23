@@ -3,6 +3,11 @@
     <bean id="userDao" class="com.jilin.spring.beans.test.bean.UserDao"/>
     <bean id="userService" class="com.jilin.spring.beans.test.bean.UserService">
         <property name="uId" value="10001"/>
+        <property name="company" value="腾讯"/>
+        <property name="location" value="北京"/>
         <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean class="com.jilin.spring.beans.test.processor.MyBeanFactoryPostProcessor"/>
+    <bean class="com.jilin.spring.beans.test.processor.MyBeanPostProcessor"/>
 </beans>

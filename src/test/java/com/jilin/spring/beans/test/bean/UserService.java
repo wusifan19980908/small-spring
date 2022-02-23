@@ -12,12 +12,14 @@ import cn.hutool.json.JSONUtil;
  */
 public class UserService {
     private String uId;
+    private String company;
+    private String location;
 
     private UserDao userDao;
 
 
     public void queryUserInfo(){
-        System.out.printf("查询用户信息:{%s:%s}\n",uId, userDao.queryUserName(uId));
+        System.out.printf("查询用户信息:{%s:%s,%s,%s}\n",uId, userDao.queryUserName(uId),company,location);
     }
 
     public String getuId() {
@@ -34,5 +36,21 @@ public class UserService {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

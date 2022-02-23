@@ -4,5 +4,5 @@ package com.jilin.spring.beans.factory;/**
  * @Date 2022/2/18 15:59
  * @Created by jilin
  */
-public class HierarchicalBeanFactory {
+public interface HierarchicalBeanFactory extends BeanFactory{
 }

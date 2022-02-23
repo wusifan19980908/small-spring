@@ -1,7 +1,9 @@
 package com.jilin.spring.beans.factory.support;
 
 import com.jilin.spring.beans.BeansException;
+import com.jilin.spring.beans.factory.ConfigurableListableBeanFactory;
 import com.jilin.spring.beans.factory.config.BeanDefinition;
+import com.jilin.spring.beans.factory.config.BeanPostProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Map;
  * @description 最终实现类，负责注册beanDefinition和获取beanDefinition的细节
  * @createTime 2022/2/17 10:22
  */
-public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFactory implements BeanDefinitionRegistry{
+public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFactory implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
     /**
      * 存储注册的beanDefinition
      */
@@ -27,6 +29,8 @@ public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFacto
         beanDefinitionMap.put(beanName,beanDefinition);
     }
 
+
+
     /**
      * 获取beanDefinition
      * @param beanName
@@ -41,7 +45,6 @@ public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFacto
         }
         return beanDefinition;
     }
-
     /**
      * 判断是否包含指定名称的BeanDefinition
      * @param beanName
@@ -51,11 +54,32 @@ public class DefaultListableBeanFactory extends AbstractAutoWireCapableBeanFacto
     public boolean containsBeanDefinition(String beanName) {
         return beanDefinitionMap.containsKey(beanName);
     }
+    @Override
+    public <T> Map<String,T> getBeansOfType(Class<T> type) throws BeansException{
+        Map<String,T> result = new HashMap<>();
+        beanDefinitionMap.forEach((beanName,beanDefinition)->{
+            Class beanClass = beanDefinition.getBeanClass();
+            if (type.isAssignableFrom(beanClass)){
+                result.put(beanName,(T) getBean(beanName));
+            }
+        });
+        return result;
+    }
+
+
 
     @Override
     public String[] getBeanDefinitionNames() {
-        return new String[0];
+        return beanDefinitionMap.keySet().toArray(new String[0]);
     }
 
+    /**
+     * 获取名字集合
+     * @throws BeansException
+     */
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        beanDefinitionMap.keySet().forEach(this::getBean);
+    }
 
 }
