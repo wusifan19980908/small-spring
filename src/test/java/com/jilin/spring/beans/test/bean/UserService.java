@@ -4,15 +4,20 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONString;
 import cn.hutool.json.JSONUtil;
-import com.jilin.spring.beans.factory.DisposableBean;
-import com.jilin.spring.beans.factory.InitializingBean;
+import com.jilin.spring.beans.BeansException;
+import com.jilin.spring.beans.context.ApplicationContext;
+import com.jilin.spring.beans.context.ApplicationContextAware;
+import com.jilin.spring.beans.factory.*;
 
 /**
  * @author jilin
  * @description [类型描述]
  * @createTime 2022/2/17 9:58
  */
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements BeanNameWare,BeanClassLoaderAware, ApplicationContextAware,BeanFactoryAware {
+    private ApplicationContext applicationContext;
+    private BeanFactory beanFactory;
+
     private String uId;
     private String company;
     private String location;
@@ -57,12 +62,30 @@ public class UserService implements InitializingBean, DisposableBean {
     }
 
     @Override
-    public void destory() throws Exception {
-        System.out.println("执行 userservice.destory");
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        System.out.println("执行userSeevice.afterPropertieSet");
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("ClassLoader:"+classLoader);
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("BeanName is"+name);
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
 }

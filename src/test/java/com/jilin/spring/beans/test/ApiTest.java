@@ -33,12 +33,13 @@ public class ApiTest {
 
         @Test
         public void test_BeanFactory() throws BeansException {
-          //1、初始化beanfacoty
+          // 初始化BenaFactory
             ClassPathXmlAppliocationContext appliocationContext = new ClassPathXmlAppliocationContext("classpath:spring.xml");
             appliocationContext.registerShutdownHook();
-            //2\获取bean对象调用方法
+            //获取bean对象调用方法
             UserService userService = appliocationContext.getBean("userService",UserService.class);
-
             userService.queryUserInfo();
+            System.out.println("application:"+userService.getApplicationContext());
+            System.out.println("beanFactory:"+userService.getBeanFactory());
         }
 }

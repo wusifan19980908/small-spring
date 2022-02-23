@@ -5,6 +5,7 @@ import com.jilin.spring.beans.factory.BeanFactory;
 import com.jilin.spring.beans.factory.config.BeanDefinition;
 import com.jilin.spring.beans.factory.config.BeanPostProcessor;
 import com.jilin.spring.beans.factory.config.ConfigurableBeanFactory;
+import com.jilin.spring.beans.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,12 +18,17 @@ import java.util.List;
  * @createTime 2022/2/17 10:22
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+    /**
+     * 获取默认的类加载器
+     */
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-    private Logger logger = LoggerFactory.getLogger(AbstractBeanFactory.class);
     /**
      * beanPostProcessors集合
      */
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+
 
     @Override
     public Object getBean(String name){
@@ -90,5 +96,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      */
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return beanClassLoader;
     }
 }
