@@ -15,4 +15,14 @@ public interface ConfigueableApplicationContext extends ApplicationContext {
      * @throws BeansException
      */
     void refresh()throws BeansException;
+
+    /**
+     * 注册销毁bean的hook
+     */
+    void registerShutdownHook();
+
+    /**
+     * 手动关闭
+     */
+    void close() throws BeansException;
 }

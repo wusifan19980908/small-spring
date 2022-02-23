@@ -4,13 +4,15 @@ import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONString;
 import cn.hutool.json.JSONUtil;
+import com.jilin.spring.beans.factory.DisposableBean;
+import com.jilin.spring.beans.factory.InitializingBean;
 
 /**
  * @author jilin
  * @description [类型描述]
  * @createTime 2022/2/17 9:58
  */
-public class UserService {
+public class UserService implements InitializingBean, DisposableBean {
     private String uId;
     private String company;
     private String location;
@@ -52,5 +54,15 @@ public class UserService {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public void destory() throws Exception {
+        System.out.println("执行 userservice.destory");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("执行userSeevice.afterPropertieSet");
     }
 }

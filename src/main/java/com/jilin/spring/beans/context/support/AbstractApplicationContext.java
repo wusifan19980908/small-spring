@@ -32,6 +32,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     /**
+     * 注册关闭虚拟机钩子
+     */
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public void close(){
+        getBeanFactory().destorySingletons();
+    }
+
+    /**
      * 刷新BeanFactory
      * @throws BeansException
      */

@@ -1,5 +1,6 @@
 package com.jilin.spring.beans.factory.config;
 
+import com.jilin.spring.beans.BeansException;
 import com.jilin.spring.beans.factory.HierarchicalBeanFactory;
 
 /**
@@ -17,4 +18,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory,Singlet
      * @param beanPostProcessor
      */
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+    /**
+     * 销毁单例对象
+     */
+    void destorySingletons();
 }

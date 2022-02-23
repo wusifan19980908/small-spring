@@ -1,9 +1,12 @@
 package com.jilin.spring.beans.factory.support;
 
+import com.jilin.spring.beans.BeansException;
+import com.jilin.spring.beans.factory.DisposableBean;
 import com.jilin.spring.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author jilin
@@ -15,6 +18,10 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
      * 根据beanName来存储单例对象
      */
     private Map<String,Object> singletonObjects = new HashMap<>();
+    /**
+     * 注册销毁的bean
+     */
+    private final Map<String, DisposableBean> disposableBeans = new HashMap<>();
 
     /**
      * 获取单例对象
@@ -33,5 +40,32 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
      */
     protected  void addSingleton(String beanName,Object singletonObject){
         singletonObjects.put(beanName, singletonObject);
+    }
+
+    /**
+     * 存储注册的有销毁方法的bean
+     * @param beanName
+     * @param bean
+     */
+    public void registerDisposableBean(String beanName,DisposableBean bean){
+        disposableBeans.put(beanName,bean);
+    }
+
+    /**
+     * 销毁单例对象
+     */
+    public void destorySingletons(){
+        Set<String> keySet = this.disposableBeans.keySet();
+        String[] disposableBeanNames = keySet.toArray(new String[0]);
+
+        for (int i = disposableBeanNames.length-1;i>=0;i--){
+            Object beanName = disposableBeanNames[i];
+            DisposableBean disposableBean = disposableBeans.get(beanName);
+            try{
+                disposableBean.destory();
+            }catch (Exception e){
+                System.out.println("Destory方法执行失败，bean名称：["+beanName+"]");
+            }
+        }
     }
 }

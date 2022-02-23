@@ -33,10 +33,12 @@ public class ApiTest {
 
         @Test
         public void test_BeanFactory() throws BeansException {
-          //1、chushihua
+          //1、初始化beanfacoty
             ClassPathXmlAppliocationContext appliocationContext = new ClassPathXmlAppliocationContext("classpath:spring.xml");
-            //2、获取bean对象
+            appliocationContext.registerShutdownHook();
+            //2\获取bean对象调用方法
             UserService userService = appliocationContext.getBean("userService",UserService.class);
+
             userService.queryUserInfo();
         }
 }

@@ -1,10 +1,13 @@
 package com.jilin.spring.beans.factory.support;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.jilin.spring.beans.BeansException;
 import com.jilin.spring.beans.PropertyValue;
 import com.jilin.spring.beans.PropertyValues;
 import com.jilin.spring.beans.factory.BeanFactory;
+import com.jilin.spring.beans.factory.DisposableBean;
+import com.jilin.spring.beans.factory.InitializingBean;
 import com.jilin.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.jilin.spring.beans.factory.config.BeanDefinition;
 import com.jilin.spring.beans.factory.config.BeanPostProcessor;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @author jilin
@@ -43,14 +47,29 @@ public abstract class AbstractAutoWireCapableBeanFactory extends AbstractBeanFac
             applyPropertyValues(beanName,bean,beanDefinition);
 
             //执行bean的初始化方法和BeanPostProcessor的前置和后置处理方法
-            bean = initializaBean(beanName,bean,beanDefinition);
+            bean = initializeBean(beanName,bean,beanDefinition);
         } catch (Exception e) {
             throw new BeansException("实例化失败",e);
         }
+        //注册实现了DisposableBean接口的bean对象
+        registerDisposableBeanIfNecessary(beanName,bean,beanDefinition);
         //将实例化后的bean添加到单例对象map
         addSingleton(beanName,bean);
         return bean;
     }
+
+    /**
+     * 注册需要执行销毁方法的bean
+     * @param beanName
+     * @param bean
+     * @param beanDefinition
+     */
+    protected void registerDisposableBeanIfNecessary(String beanName,Object bean,BeanDefinition beanDefinition){
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())){
+            registerDisposableBean(beanName,new DisposableBeanAdapter(bean,beanName,beanDefinition));
+        }
+    }
+
 
     /**
      * 实例化bean
@@ -122,18 +141,33 @@ public abstract class AbstractAutoWireCapableBeanFactory extends AbstractBeanFac
      * @return
      * @throws BeansException
      */
-    private Object initializaBean(String beanName,Object bean,BeanDefinition beanDefinition) throws BeansException {
-        //1\执行BeanPostProcessor bfore处理
+    private Object initializeBean(String beanName,Object bean,BeanDefinition beanDefinition) throws Exception {
+        //1\执行beanPostProcessor befor处理
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean,beanName);
-        //2.待完成内容，invokeInitMethods
-        invokeInitMethods(beanName,wrappedBean,beanDefinition);
-        //3.执行BeanPostProcessor After处理
-        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean,beanName);
+        try{
+            invokeInitMethods(beanName,wrappedBean,beanDefinition);
+        }catch (Exception e){
+            throw new Exception("执行init方法失败bean["+beanName+"]",e);
+        }
+        //执行 beanPostProcessor after处理
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean,beanName);
         return wrappedBean;
     }
+    private void invokeInitMethods(String beanName,Object bean,BeanDefinition beanDefinition) throws Exception {
+        //1实现接口 InitializingBean
+        if (bean instanceof InitializingBean){
+            ((InitializingBean) bean).afterPropertiesSet();
+        }
 
-    private void invokeInitMethods(String beanName,Object wrappedBean,BeanDefinition beanDefinition){
-
+        //2 配置信息 init-method  判断是为了避免二次执行销毁
+        String initMethodName = beanDefinition.getInitMethodName();
+        if (StrUtil.isNotEmpty(initMethodName)){
+            Method initMethod = beanDefinition.getBeanClass().getMethod(initMethodName);
+            if (null==initMethod){
+                throw new BeansException("无法找到初始化方法，方法名：["+initMethodName+"],bean名字:["+beanName+"]");
+            }
+            initMethod.invoke(bean);
+        }
     }
 
     /**
