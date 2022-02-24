@@ -13,10 +13,12 @@ import com.jilin.spring.beans.factory.support.DefaultListableBeanFactory;
 import com.jilin.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import com.jilin.spring.beans.test.bean.UserDao;
 import com.jilin.spring.beans.test.bean.UserService;
+import com.jilin.spring.beans.test.event.CustomEvent;
 import com.jilin.spring.beans.test.processor.MyBeanFactoryPostProcessor;
 import com.jilin.spring.beans.test.processor.MyBeanPostProcessor;
 import org.junit.Before;
 import org.junit.Test;
+import org.openjdk.jol.info.ClassLayout;
 
 /**
  * @author jilin
@@ -34,12 +36,9 @@ public class ApiTest {
         @Test
         public void test_BeanFactory() throws BeansException {
           // 初始化BenaFactory
-            ClassPathXmlAppliocationContext appliocationContext = new ClassPathXmlAppliocationContext("classpath:spring.xml");
-            appliocationContext.registerShutdownHook();
-            //获取bean对象调用方法
-            UserService userService = appliocationContext.getBean("userService",UserService.class);
-            userService.queryUserInfo();
-            System.out.println("application:"+userService.getApplicationContext());
-            System.out.println("beanFactory:"+userService.getBeanFactory());
+           ClassPathXmlAppliocationContext appliocationContext = new ClassPathXmlAppliocationContext("classpath:spring.xml");
+           appliocationContext.publishEvent(new CustomEvent(appliocationContext,10191290090877123L,"成功了"));
+
+           appliocationContext.registerShutdownHook();
         }
 }

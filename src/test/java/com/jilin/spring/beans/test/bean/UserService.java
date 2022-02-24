@@ -22,11 +22,14 @@ public class UserService implements BeanNameWare,BeanClassLoaderAware, Applicati
     private String company;
     private String location;
 
-    private UserDao userDao;
+    private IUserDao userDao;
 
 
     public void queryUserInfo(){
-        System.out.printf("查询用户信息:{%s:%s,%s,%s}\n",uId, userDao.queryUserName(uId),company,location);
+        System.out.printf("查询用户信息:{%s}\n",userDao.queryUserName(uId));
+    }
+    public void queryUserId(){
+        System.out.println("查询用户id:"+userDao.queryUserId(uId));
     }
 
     public String getuId() {
@@ -37,11 +40,11 @@ public class UserService implements BeanNameWare,BeanClassLoaderAware, Applicati
         this.uId = uId;
     }
 
-    public UserDao getUserDao() {
+    public IUserDao getUserDao() {
         return userDao;
     }
 
-    public void setUserDao(UserDao userDao) {
+    public void setUserDao(IUserDao userDao) {
         this.userDao = userDao;
     }
 

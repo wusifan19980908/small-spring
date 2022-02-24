@@ -1,5 +1,7 @@
 package com.jilin.spring.beans.context;
 
+import com.jilin.spring.beans.core.io.ResourceLoader;
+import com.jilin.spring.beans.factory.HierarchicalBeanFactory;
 import com.jilin.spring.beans.factory.ListableBeanFactory;
 
 /**
@@ -8,5 +10,5 @@ import com.jilin.spring.beans.factory.ListableBeanFactory;
  * @Date 2022/2/21 15:53
  * @Created by jilin
  */
-public interface ApplicationContext extends ListableBeanFactory {
+public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ResourceLoader,ApplicationEventPublisher {
 }

@@ -5,8 +5,10 @@ import com.jilin.spring.beans.factory.DisposableBean;
 import com.jilin.spring.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author jilin
@@ -14,14 +16,19 @@ import java.util.Set;
  * @createTime 2022/2/17 10:23
  */
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
+
+    /**
+     * 空对象
+     */
+    protected  static final Object NULL_OBJECT = new Object();
     /**
      * 根据beanName来存储单例对象
      */
-    private Map<String,Object> singletonObjects = new HashMap<>();
+    private Map<String,Object> singletonObjects = new ConcurrentHashMap<>();
     /**
      * 注册销毁的bean
      */
-    private final Map<String, DisposableBean> disposableBeans = new HashMap<>();
+    private final Map<String, DisposableBean> disposableBeans = new LinkedHashMap<>();
 
     /**
      * 获取单例对象
@@ -31,6 +38,16 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     @Override
     public Object getSingleton(String beanName) {
         return singletonObjects.get(beanName);
+    }
+
+    /**
+     * 注册单例对象
+     * @param beanName
+     * @param singletonObject
+     */
+    @Override
+    public void registerSingleton(String beanName, Object singletonObject) {
+        singletonObjects.put(beanName,singletonObject);
     }
 
     /**

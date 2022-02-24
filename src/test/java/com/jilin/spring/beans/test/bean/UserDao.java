@@ -14,9 +14,7 @@ public class UserDao {
 
     public void initDataMethod(){
         System.out.println("执行init方法");
-        hashMap.put("10001","sifan");
-        hashMap.put("10002","jilin");
-        hashMap.put("10003","xuye");
+
     }
 
     public String queryUserName(String uId){
