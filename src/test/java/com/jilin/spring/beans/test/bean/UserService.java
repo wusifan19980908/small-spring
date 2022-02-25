@@ -9,12 +9,14 @@ import com.jilin.spring.beans.context.ApplicationContext;
 import com.jilin.spring.beans.context.ApplicationContextAware;
 import com.jilin.spring.beans.factory.*;
 
+import java.util.Random;
+
 /**
  * @author jilin
  * @description [类型描述]
  * @createTime 2022/2/17 9:58
  */
-public class UserService implements BeanNameWare,BeanClassLoaderAware, ApplicationContextAware,BeanFactoryAware {
+public class UserService implements IUserService{
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
 
@@ -26,8 +28,10 @@ public class UserService implements BeanNameWare,BeanClassLoaderAware, Applicati
 
 
     public void queryUserInfo(){
-        System.out.printf("查询用户信息:{%s}\n",userDao.queryUserName(uId));
+
     }
+
+
     public void queryUserId(){
         System.out.println("查询用户id:"+userDao.queryUserId(uId));
     }
@@ -65,30 +69,26 @@ public class UserService implements BeanNameWare,BeanClassLoaderAware, Applicati
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public void queryUserName() {
+        try{
+            Thread.sleep(new Random(1).nextInt(100));
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.printf("查询用户信息:{%s}\n","123");
+    }
+    @Override
+    public String register(String userName){
+        try{
+            Thread.sleep(1000);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "注册用户："+userName+"success!";
     }
 
     @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        System.out.println("ClassLoader:"+classLoader);
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-    }
-
-    @Override
-    public void setBeanName(String name) {
-        System.out.println("BeanName is"+name);
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public BeanFactory getBeanFactory() {
-        return beanFactory;
+    public String queryUserId(String uId) {
+        return null;
     }
 }
